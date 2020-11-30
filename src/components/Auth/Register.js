@@ -9,7 +9,10 @@ export default class Register extends Component {
 		email: '',
 		password: '',
 		passwordConfirmation: '',
+		errors: [],
 	}
+
+	displayErrors = (errors) => errors.map((error, i) => <p key={i}>{error.message}</p>)
 
 	handleChange = (event) => {
 		this.setState({
@@ -17,21 +20,58 @@ export default class Register extends Component {
 		})
 	}
 
+	isFormValid = () => {
+		let errors = []
+		let error
+		if (this.isFormEmpty(this.state)) {
+			error = { message: 'Fill in all fields' }
+			this.setState({ errors: errors.concat(error) })
+			return false
+		} else if (!this.isPasswordValid(this.state)) {
+			error = { message: 'Password is invalid' }
+			this.setState({ errors: errors.concat(error) })
+			return false
+		} else {
+			return true
+		}
+	}
+
+	isFormEmpty = ({ username, email, password, passwordConfirmation }) => {
+		return !username.length || !email.length || !password.length || !passwordConfirmation.length
+	}
+
+	isPasswordValid = ({ password, passwordConfirmation }) => {
+		console.log(password, passwordConfirmation)
+		if (password.length < 6 || passwordConfirmation.length < 6) {
+			console.log('password invalid')
+			return false
+		} else if (password !== passwordConfirmation) {
+			console.log('password invalid')
+			return false
+		} else {
+			console.log('password valid')
+			return true
+		}
+	}
+
 	handleSubmit = (e) => {
-		e.preventDefault()
-		firebase
-			.auth()
-			.createUserWithEmailAndPassword(this.state.email, this.state.password)
-			.then((createdUser) => {
-				console.log(createdUser)
-			})
-			.catch((err) => {
-				console.error(err)
-			})
+		if (this.isFormValid()) {
+			console.log('success')
+			e.preventDefault()
+			firebase
+				.auth()
+				.createUserWithEmailAndPassword(this.state.email, this.state.password)
+				.then((createdUser) => {
+					console.log(createdUser)
+				})
+				.catch((err) => {
+					console.error(err)
+				})
+		}
 	}
 
 	render() {
-		const { username, email, password, passwordConfirmation } = this.state
+		const { username, email, password, passwordConfirmation, errors } = this.state
 
 		return (
 			<Grid textAlign='center' verticalAlign='middle' className='app'>
@@ -87,6 +127,12 @@ export default class Register extends Component {
 							</Button>
 						</Segment>
 					</Form>
+					{errors.length > 0 && (
+						<Message error>
+							<h3>Error</h3>
+							{this.displayErrors(errors)}
+						</Message>
+					)}
 					<Message>
 						Already a user? <Link to='/login'>Login</Link>
 					</Message>
