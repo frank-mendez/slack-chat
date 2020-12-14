@@ -1,8 +1,19 @@
 import React, { Component } from 'react'
+import { Comment, Segment } from 'semantic-ui-react'
+import MessagesHeader from './MessagesHeader'
+import MessageForm from './MessageForm'
 
 export class Messages extends Component {
 	render() {
-		return <div>Message</div>
+		return (
+			<React.Fragment>
+				<MessagesHeader />
+				<Segment>
+					<Comment.Group className='messages'></Comment.Group>
+				</Segment>
+				<MessageForm />
+			</React.Fragment>
+		)
 	}
 }
 
