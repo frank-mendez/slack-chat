@@ -11,7 +11,7 @@ const timeFromNow = (timestamp) => {
 }
 
 const isImage = (message) => {
-	console.log('image', message)
+	//console.log('image', message)
 	return message.hasOwnProperty('image')
 }
 
