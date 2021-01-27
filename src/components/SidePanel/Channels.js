@@ -24,6 +24,7 @@ export class Channels extends Component {
 		let loadedChannels = []
 		this.state.channelsRef.on('child_added', (snap) => {
 			loadedChannels.push(snap.val())
+			console.log('component did mount 2', snap.val())
 			this.setState({ channels: loadedChannels }, () => this.setFirstChannel())
 		})
 	}
